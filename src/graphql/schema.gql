@@ -1,0 +1,36 @@
+type Npc {
+  name: String!
+  gender: String!
+  age: Int
+  race: String!
+  alignment: String
+  profession: String
+  appearence: Appearence
+  personality: Personality
+  notes: Notes
+}
+
+type Appearence {
+  hairColor: String
+  hairStyle: String
+  height: Int
+  weight: Int
+  eyeColor: String
+  skinColor: String
+}
+
+type Personality {
+  traits: String
+  goals: String
+  fears: String
+}
+
+type Notes {
+  currentLocation: String
+  alive: Boolean
+}
+
+type Query {
+  allNpcs: [Npc!]
+  npcByName(name: String): Npc
+}

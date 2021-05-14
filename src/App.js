@@ -1,25 +1,61 @@
-import logo from './logo.svg';
-import './App.css';
+import { useQuery, useMutation, gql } from '@apollo/client'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import CreateNpc from './pages/create-npc/CreateNpc';
+
+const getAllNpc = gql`
+ query {
+  allNpcs {
+    data {
+      age
+      name
+      race
+      gender
+    }
+  }
+}
+`
+
+const createNpc = gql`
+  mutation createNpc($data: NpcInput!) {
+    createNpc(data: $data) {
+      _id
+    }
+  }
+`
 
 function App() {
+  const { loading, error, data } = useQuery(getAllNpc)
+  const [createItem] = useMutation(createNpc, {
+    refetchQueries: [{ query: getAllNpc }],
+    onCompleted: () => {
+      console.log('completed')
+    },
+  })
+  
+  const handleClick = (event) => {
+    event.preventDefault();
+    createItem({
+      variables: {
+        data: {
+          name: "Joe",
+          age: 31,
+          gender: "Male",
+          race: "human"
+    }}})
+  }
+  console.log(data)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Router>
+      <Switch>
+        <Route exact path="/create"><CreateNpc /></Route>
+      </Switch>
+    </Router>
+  )
 }
 
 export default App;
